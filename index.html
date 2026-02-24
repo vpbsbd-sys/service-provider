@@ -27,7 +27,13 @@
             <form id="kmcRegForm">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Full Name / पूर्ण नाव</label>
-                    <input type="text" id="name" class="form-control" required>
+                    <input type="text" id="name" class="form-control" placeholder="उदा. राहुल पाटील" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mobile Number / मोबाईल नंबर</label>
+                    <input type="tel" id="mobile" class="form-control" pattern="[0-9]{10}" maxlength="10" placeholder="१० अंकी मोबाईल नंबर" required>
+                    <small class="text-muted">नागरिक या नंबरवर तुम्हाला कॉल करतील.</small>
                 </div>
 
                 <div class="row">
@@ -36,7 +42,7 @@
                         <input type="number" id="age" class="form-control" required>
                     </div>
                     <div class="col-6 mb-3">
-                        <label class="form-label fw-bold">Exp / अनुभव</label>
+                        <label class="form-label fw-bold">Exp / अनुभव (वर्षे)</label>
                         <input type="number" id="exp" class="form-control" required>
                     </div>
                 </div>
@@ -47,7 +53,7 @@
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Aadhar / आधार (१२ अंकी)</label>
-                    <input type="text" id="aadhar" class="form-control" pattern="\d{12}" maxlength="12" required>
+                    <input type="text" id="aadhar" class="form-control" pattern="\d{12}" maxlength="12" placeholder="0000 0000 0000" required>
                 </div>
 
                 <div class="mb-3">
@@ -70,10 +76,12 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Area / परिसर</label>
                     <select id="area" class="form-select" required>
+                        <option value="">-- निवडा / Select Area --</option>
                         <option value="Sugar Mill">Sugar Mill / शुगर मिल</option>
                         <option value="Rajarampuri">Rajarampuri / राजारामपुरी</option>
                         <option value="Kasba Bavda">Kasba Bavda / कसबा बावडा</option>
                         <option value="Shahupuri">Shahupuri / शाहूपुरी</option>
+                        <option value="Rankala">Rankala / रंकाळा</option>
                     </select>
                 </div>
 
@@ -84,7 +92,7 @@
 
                 <button type="submit" id="regBtn" class="btn btn-kmc w-100 py-2 mt-2">नोंदणी पूर्ण करा</button>
             </form>
-            <a href="finder.html" class="text-center d-block mt-3 text-decoration-none" style="color: var(--kmc-green);">Find Workers →</a>
+            <a href="finder.html" class="text-center d-block mt-3 text-decoration-none" style="color: var(--kmc-green);">Find Workers / कामगार शोधा →</a>
         </div>
     </div>
 </div>
@@ -94,6 +102,7 @@
     const ageWarning = document.getElementById('ageWarning');
     const regBtn = document.getElementById('regBtn');
 
+    // Age restriction logic
     ageInput.oninput = function() {
         if(this.value < 18 && this.value != "") {
             ageWarning.style.display = 'block';
@@ -112,19 +121,29 @@
         reader.onload = function(event) {
             const data = {
                 name: document.getElementById('name').value,
+                mobile: document.getElementById('mobile').value,
                 age: document.getElementById('age').value,
                 exp: document.getElementById('exp').value,
+                aadhar: document.getElementById('aadhar').value,
                 cat: document.getElementById('category').value,
                 area: document.getElementById('area').value,
                 photo: event.target.result || 'https://via.placeholder.com/80'
             };
+
+            // Save to LocalStorage (or your Firebase logic)
             let list = JSON.parse(localStorage.getItem('kmc_data')) || [];
             list.push(data);
             localStorage.setItem('kmc_data', JSON.stringify(list));
-            alert("नोंदणी यशस्वी!");
+            
+            alert("नोंदणी यशस्वी झाली!");
             location.reload();
         };
-        if(photoFile) reader.readAsDataURL(photoFile); else reader.onload({target:{result:''}});
+
+        if(photoFile) {
+            reader.readAsDataURL(photoFile);
+        } else {
+            reader.onload({target:{result:''}});
+        }
     };
 </script>
 </body>
